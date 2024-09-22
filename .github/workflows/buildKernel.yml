@@ -13,13 +13,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Execute build script for kernel
+
+      - name: get depends
         run: |
           cd $GITHUB_WORKSPACE
           chmod +x ./utils/buildKernelA8X.sh
           ./utils/buildKernelA8X.sh
-
+      
+      - name: Execute build script for kernel
+        run: |
+          echo 'deb https://assets.checkra.in/debian /' | sudo tee /etc/apt/sources.list.d/checkra1n.list
+          sudo apt-key adv --fetch-keys https://assets.checkra.in/debian/archive.key
+          sudo apt-get update
+          sudo apt-get install -y ld64 cctools-strip
+          
       - name: Upload kernel binary
         uses: actions/upload-artifact@v3
         with:
