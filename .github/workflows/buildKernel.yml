@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Execute build script for kernel
+        run: |
+          cd $GITHUB_WORKSPACE
+          chmod +x ./utils/buildKernelA8X.sh
+          ./utils/buildKernelA8X.sh
+
+      - name: Upload kernel binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: kernel
+          path: $GITHUB_WORKSPACE/bin/Image.lzma  # Adjust this path to where your artifacts are located
+
+      - name: Upload dtbpack
+        uses: actions/upload-artifact@v3
+        with:
+          name: kernel
+          path: $GITHUB_WORKSPACE/bin/dtbpack  # Adjust this path to where your artifacts are located
+
+      - name: Upload airTuxPreBuiltDevEnv
+        uses: actions/upload-artifact@v3
+        with:
+          name: kernel
+          path: $GITHUB_WORKSPACE/**  # Adjust this path to where your artifacts are located       
